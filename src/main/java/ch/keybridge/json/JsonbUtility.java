@@ -18,7 +18,8 @@
  */
 package ch.keybridge.json;
 
-import ch.keybridge.json.adapter.*;
+import ch.keybridge.json.adapter.JsonbEnvelopeAdapter;
+import ch.keybridge.json.adapter.JsonbGeometryAdapter;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import javax.json.bind.config.BinaryDataStrategy;
@@ -54,14 +55,8 @@ public class JsonbUtility {
      */
     JsonbConfig readerConfig = new JsonbConfig()
       .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
-      .withDeserializers(new JsonbDateAdapter.Deserializer())
-      .withDeserializers(new JsonbDurationAdapter.Deserializer())
       .withDeserializers(new JsonbEnvelopeAdapter.Deserializer())
-      .withDeserializers(new JsonbGeometryAdapter.Deserializer())
-      .withDeserializers(new JsonbLocalDateAdapter.Deserializer())
-      .withDeserializers(new JsonbLocalDateTimeAdapter.Deserializer())
-      .withDeserializers(new JsonbZoneIdAdapter.Deserializer())
-      .withDeserializers(new JsonbZonedDateTimeAdapter.Deserializer());
+      .withDeserializers(new JsonbGeometryAdapter.Deserializer());
     reader = new JsonbReader(readerConfig);
     /**
      * Configure and create the writer instance.
@@ -71,16 +66,8 @@ public class JsonbUtility {
       .withStrictIJSON(true)
       .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
       .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy())
-      .withSerializers(new JsonbGeometryAdapter.Serializer())
       .withSerializers(new JsonbEnvelopeAdapter.Serializer())
-      .withSerializers(new JsonbDateAdapter.Serializer())
-      .withSerializers(new JsonbDurationAdapter.Serializer())
-      .withSerializers(new JsonbEnvelopeAdapter.Serializer())
-      .withSerializers(new JsonbGeometryAdapter.Serializer())
-      .withSerializers(new JsonbLocalDateAdapter.Serializer())
-      .withSerializers(new JsonbLocalDateTimeAdapter.Serializer())
-      .withSerializers(new JsonbZoneIdAdapter.Serializer())
-      .withSerializers(new JsonbZonedDateTimeAdapter.Serializer());
+      .withSerializers(new JsonbGeometryAdapter.Serializer());
     writer = new JsonbWriter(writerConfig);
   }
 
