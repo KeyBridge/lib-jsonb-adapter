@@ -22,6 +22,7 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
+import javax.json.bind.adapter.JsonbAdapter;
 import javax.json.bind.config.BinaryDataStrategy;
 import javax.json.bind.serializer.JsonbSerializer;
 
@@ -82,6 +83,21 @@ public class JsonbWriter {
    */
   public final JsonbWriter withSerializers(final JsonbSerializer... serializers) {
     this.jsonbConfig = jsonbConfig.withSerializers(serializers);
+    this.jsonb = JsonbBuilder.create(jsonbConfig);
+    return this;
+  }
+
+  /**
+   * Property used to specify custom mapping adapters. Configures value of
+   * {@code ADAPTERS} property. Calling withAdapters more than once will merge
+   * the adapters with previous value.
+   *
+   * @param adapters Custom mapping adapters which affects serialization and
+   *                 deserialization.
+   * @return This JsonbConfig instance.
+   */
+  public final JsonbWriter withAdapters(final JsonbAdapter... adapters) {
+    this.jsonbConfig = jsonbConfig.withAdapters(adapters);
     this.jsonb = JsonbBuilder.create(jsonbConfig);
     return this;
   }
