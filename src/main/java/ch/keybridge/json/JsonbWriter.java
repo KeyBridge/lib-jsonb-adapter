@@ -18,8 +18,6 @@
  */
 package ch.keybridge.json;
 
-import ch.keybridge.json.adapter.JsonbEnvelopeAdapter;
-import ch.keybridge.json.adapter.JsonbGeometryAdapter;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -60,9 +58,17 @@ public class JsonbWriter {
       .withFormatting(true)
       .withStrictIJSON(true)
       .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
-      .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy())
-      .withSerializers(new JsonbGeometryAdapter.Serializer())
-      .withSerializers(new JsonbEnvelopeAdapter.Serializer());
+      .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy());
+    this.jsonb = JsonbBuilder.create(jsonbConfig);
+  }
+
+  /**
+   * Construct the writer with a custom configuration.
+   *
+   * @param jsonbConfig the JsonB configuration
+   */
+  public JsonbWriter(JsonbConfig jsonbConfig) {
+    this.jsonbConfig = jsonbConfig;
     this.jsonb = JsonbBuilder.create(jsonbConfig);
   }
 

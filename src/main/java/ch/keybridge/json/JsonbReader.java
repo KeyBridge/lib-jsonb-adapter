@@ -18,8 +18,6 @@
  */
 package ch.keybridge.json;
 
-import ch.keybridge.json.adapter.JsonbEnvelopeAdapter;
-import ch.keybridge.json.adapter.JsonbGeometryAdapter;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -57,10 +55,17 @@ public class JsonbReader {
      * I-JSON (”Internet JSON”) is a restricted profile of JSON.
      */
     jsonbConfig = new JsonbConfig()
-      .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
-      .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy())
-      .withDeserializers(new JsonbGeometryAdapter.Deserializer())
-      .withDeserializers(new JsonbEnvelopeAdapter.Deserializer());
+      .withBinaryDataStrategy(BinaryDataStrategy.BASE_64);
+    this.jsonb = JsonbBuilder.create(jsonbConfig);
+  }
+
+  /**
+   * Construct the reader with a custom configuration.
+   *
+   * @param jsonbConfig the custom configuratino
+   */
+  public JsonbReader(JsonbConfig jsonbConfig) {
+    this.jsonbConfig = jsonbConfig;
     this.jsonb = JsonbBuilder.create(jsonbConfig);
   }
 
