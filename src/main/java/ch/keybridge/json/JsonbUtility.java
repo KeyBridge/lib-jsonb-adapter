@@ -22,6 +22,8 @@ import ch.keybridge.json.adapter.*;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import javax.json.bind.config.BinaryDataStrategy;
+import javax.json.bind.serializer.JsonbDeserializer;
+import javax.json.bind.serializer.JsonbSerializer;
 
 /**
  * Common JsonB marshaling and un-marshaling utilities. These methods help to
@@ -43,7 +45,8 @@ public class JsonbUtility {
   private JsonbWriter writer;
 
   /**
-   * Default no-arg constructor. Sets up the configuration and serializers.
+   * Default no-arg constructor. Sets up the reader and writer with a complete
+   * configuration. Note that extension adapters can be added separately.
    */
   public JsonbUtility() {
     /**
@@ -59,7 +62,7 @@ public class JsonbUtility {
       .withDeserializers(new JsonbLocalDateTimeAdapter.Deserializer())
       .withDeserializers(new JsonbZoneIdAdapter.Deserializer())
       .withDeserializers(new JsonbZonedDateTimeAdapter.Deserializer());
-    this.reader = new JsonbReader(readerConfig);
+    reader = new JsonbReader(readerConfig);
     /**
      * Configure and create the writer instance.
      */
@@ -78,7 +81,33 @@ public class JsonbUtility {
       .withSerializers(new JsonbLocalDateTimeAdapter.Serializer())
       .withSerializers(new JsonbZoneIdAdapter.Serializer())
       .withSerializers(new JsonbZonedDateTimeAdapter.Serializer());
-    this.writer = new JsonbWriter(writerConfig);
+    writer = new JsonbWriter(writerConfig);
+  }
+
+  /**
+   * Property used to specify custom deserializers. Configures value of
+   * {@code DESERIALIZERS} property. Calling withDeserializers more than once
+   * will merge the deserializers with previous value.
+   *
+   * @param deserializers Custom deserializers which affects deserialization.
+   * @return This JsonbUtility instance.
+   */
+  public final JsonbUtility withDeserializers(final JsonbDeserializer... deserializers) {
+    reader = reader.withDeserializers(deserializers);
+    return this;
+  }
+
+  /**
+   * Property used to specify custom serializers. Configures value of
+   * {@code SERIALIZERS} property. Calling withSerializers more than once will
+   * merge the serializers with previous value.
+   *
+   * @param serializers Custom serializers which affects serialization.
+   * @return This JsonbUtility instance.
+   */
+  public final JsonbUtility withSerializers(final JsonbSerializer... serializers) {
+    writer = writer.withSerializers(serializers);
+    return this;
   }
 
   /**
