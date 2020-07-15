@@ -90,6 +90,9 @@ The Gzip and Map adapters are located in the _ext_ package and not included by d
 **Compatibility with JAX-B**   
 A custom _PropertyVisibilityStrategy_ implementation is included in the default JsonbUtility configuration to recognize and respect JAXB annotations. The _JsonbPropertyVisibilityStrategy_ tries to emulate the `XmlAccessType.FIELD` JAXB annotation strategy where all methods are ignored unless specifically annotated with _XmlElement_ or _XmlAttribute_. All class fields are recognized by default unless annotated with _XmlTransient_.
 
+**License**
+
+Apache License Version 2.0.  _"Knock yerself out"_
 
 **References**
 
