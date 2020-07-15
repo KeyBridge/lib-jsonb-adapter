@@ -18,7 +18,6 @@
  */
 package ch.keybridge.json;
 
-import ch.keybridge.gis.dto.Position;
 import com.thedeanda.lorem.LoremIpsum;
 import java.util.Date;
 import java.util.Random;
