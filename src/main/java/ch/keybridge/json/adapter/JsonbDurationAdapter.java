@@ -34,7 +34,7 @@ public class JsonbDurationAdapter {
 
   /**
    * Class that defines API used by {@code ObjectMapper} (and other chained
-   * {@link JsonSerializer}s too) to serialize Objects into JSON.
+   * {@code JsonSerializer}s too) to serialize Objects into JSON.
    */
   public static class Serializer implements JsonbSerializer<Duration> {
 
@@ -58,8 +58,8 @@ public class JsonbDurationAdapter {
 
   /**
    * Class that defines API used by {@code ObjectMapper} (and other chained
-   * {@link JsonDeserializer}s too) to deserialize Objects of from JSON, using
-   * provided {@link JsonParser}.
+   * {@code JsonDeserializer}s too) to deserialize Objects of from JSON, using
+   * provided {@code JsonParser}.
    */
   public static class Deserializer implements JsonbDeserializer<Duration> {
 
