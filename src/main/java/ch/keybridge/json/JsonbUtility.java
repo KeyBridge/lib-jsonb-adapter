@@ -22,6 +22,7 @@ import ch.keybridge.json.adapter.JsonbEnvelopeAdapter;
 import ch.keybridge.json.adapter.JsonbGeometryAdapter;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
+import javax.json.bind.adapter.JsonbAdapter;
 import javax.json.bind.config.BinaryDataStrategy;
 import javax.json.bind.serializer.JsonbDeserializer;
 import javax.json.bind.serializer.JsonbSerializer;
@@ -51,24 +52,33 @@ public class JsonbUtility {
    */
   public JsonbUtility() {
     /**
-     * Configure and create the reader instance.
+     * Configure and create the reader and writer instance using the same base
+     * configuration.
      */
-    JsonbConfig readerConfig = new JsonbConfig()
-      .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
-      .withDeserializers(new JsonbEnvelopeAdapter.Deserializer())
-      .withDeserializers(new JsonbGeometryAdapter.Deserializer());
-    reader = new JsonbReader(readerConfig);
-    /**
-     * Configure and create the writer instance.
-     */
-    JsonbConfig writerConfig = new JsonbConfig()
+    JsonbConfig jsonbConfig = new JsonbConfig()
       .withFormatting(true)
       .withStrictIJSON(true)
       .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
       .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy())
-      .withSerializers(new JsonbEnvelopeAdapter.Serializer())
-      .withSerializers(new JsonbGeometryAdapter.Serializer());
-    writer = new JsonbWriter(writerConfig);
+      .withAdapters(new JsonbGeometryAdapter())
+      .withAdapters(new JsonbEnvelopeAdapter());
+    reader = new JsonbReader(jsonbConfig);
+    writer = new JsonbWriter(jsonbConfig);
+  }
+
+  /**
+   * Property used to specify custom mapping adapters. Configures value of
+   * {@code ADAPTERS} property. Calling withAdapters more than once will merge
+   * the adapters with previous value.
+   *
+   * @param adapters Custom mapping adapters which affects serialization and
+   *                 deserialization.
+   * @return This JsonbConfig instance.
+   */
+  public final JsonbUtility withAdapters(final JsonbAdapter... adapters) {
+    reader = reader.withAdapters(adapters);
+    writer = writer.withAdapters(adapters);
+    return this;
   }
 
   /**
