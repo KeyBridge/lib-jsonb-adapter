@@ -18,83 +18,67 @@
  */
 package ch.keybridge.json;
 
-import ch.keybridge.json.adapter.JsonbEnvelopeAdapter;
-import ch.keybridge.json.adapter.JsonbGeometryAdapter;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+import ch.keybridge.json.adapter.*;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import javax.json.bind.config.BinaryDataStrategy;
-import javax.json.bind.serializer.JsonbDeserializer;
-import javax.json.bind.serializer.JsonbSerializer;
 
 /**
  * Common JsonB marshaling and un-marshaling utilities. These methods help to
  * serialize and un-serialize object representations to and from JSON.
  *
  * @author Key Bridge
- * @since v0.47.0 created 2020-07-14
- * @see <a href="http://json-b.net/docs/user-guide.html">JSON Binding</a>
+ * @since v1.0.0 created 2020-07-15
+ * @see <a href="http://json-b.net">JSON Binding</a>
  */
 public class JsonbUtility {
 
   /**
-   * The configuration setting for the Jsonb parser.
+   * The JsonB reader instance.
    */
-  private JsonbConfig jsonbConfig;
+  private JsonbReader reader;
   /**
-   * Jsonb provides an abstraction over the JSON Binding framework operations.
+   * The JsonB writer instance.
    */
-  private Jsonb jsonb;
+  private JsonbWriter writer;
 
   /**
    * Default no-arg constructor. Sets up the configuration and serializers.
    */
   public JsonbUtility() {
     /**
-     * BASE_64 = "BASE_64" Using this strategy, binary data is encoded using the
-     * Base64 encoding scheme as specified in RFC 4648 and RFC 2045.
-     * <p>
-     * I-JSON (”Internet JSON”) is a restricted profile of JSON.
+     * Configure and create the reader instance.
      */
-    jsonbConfig = new JsonbConfig()
+    JsonbConfig readerConfig = new JsonbConfig()
+      .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
+      .withDeserializers(new JsonbDateAdapter.Deserializer())
+      .withDeserializers(new JsonbDurationAdapter.Deserializer())
+      .withDeserializers(new JsonbEnvelopeAdapter.Deserializer())
+      .withDeserializers(new JsonbGeometryAdapter.Deserializer())
+      .withDeserializers(new JsonbLocalDateAdapter.Deserializer())
+      .withDeserializers(new JsonbLocalDateTimeAdapter.Deserializer())
+      .withDeserializers(new JsonbZoneIdAdapter.Deserializer())
+      .withDeserializers(new JsonbZonedDateTimeAdapter.Deserializer());
+    this.reader = new JsonbReader(readerConfig);
+    /**
+     * Configure and create the writer instance.
+     */
+    JsonbConfig writerConfig = new JsonbConfig()
       .withFormatting(true)
       .withStrictIJSON(true)
       .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
       .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy())
       .withSerializers(new JsonbGeometryAdapter.Serializer())
-      .withDeserializers(new JsonbGeometryAdapter.Deserializer())
       .withSerializers(new JsonbEnvelopeAdapter.Serializer())
-      .withDeserializers(new JsonbEnvelopeAdapter.Deserializer());
-    this.jsonb = JsonbBuilder.create(jsonbConfig);
-  }
-
-  /**
-   * Property used to specify custom serializers. Configures value of
-   * {@code SERIALIZERS} property. Calling withSerializers more than once will
-   * merge the serializers with previous value.
-   *
-   * @param serializers Custom serializers which affects serialization.
-   * @return This JsonbUtility instance.
-   */
-  public final JsonbUtility withSerializers(final JsonbSerializer... serializers) {
-    this.jsonbConfig = jsonbConfig.withSerializers(serializers);
-    this.jsonb = JsonbBuilder.create(jsonbConfig);
-    return this;
-  }
-
-  /**
-   * Property used to specify custom deserializers. Configures value of
-   * {@code DESERIALIZERS} property. Calling withDeserializers more than once
-   * will merge the deserializers with previous value.
-   *
-   * @param deserializers Custom deserializers which affects deserialization.
-   * @return This JsonbUtility instance.
-   */
-  public final JsonbUtility withDeserializers(final JsonbDeserializer... deserializers) {
-    this.jsonbConfig = jsonbConfig.withDeserializers(deserializers);
-    this.jsonb = JsonbBuilder.create(jsonbConfig);
-    return this;
+      .withSerializers(new JsonbDateAdapter.Serializer())
+      .withSerializers(new JsonbDurationAdapter.Serializer())
+      .withSerializers(new JsonbEnvelopeAdapter.Serializer())
+      .withSerializers(new JsonbGeometryAdapter.Serializer())
+      .withSerializers(new JsonbLocalDateAdapter.Serializer())
+      .withSerializers(new JsonbLocalDateTimeAdapter.Serializer())
+      .withSerializers(new JsonbZoneIdAdapter.Serializer())
+      .withSerializers(new JsonbZonedDateTimeAdapter.Serializer());
+    this.writer = new JsonbWriter(writerConfig);
   }
 
   /**
@@ -108,7 +92,7 @@ public class JsonbUtility {
    * @throws NullPointerException If any of the parameters are null.
    */
   public final <T> String marshal(T clazz) throws JsonbException, NullPointerException {
-    return jsonb.toJson(clazz);
+    return writer.marshal(clazz);
   }
 
   /**
@@ -127,7 +111,7 @@ public class JsonbUtility {
    * @throws NullPointerException If any of the parameters are null.
    */
   public final <T> T unmarshal(String json, Class<T> clazz) throws JsonbException, NullPointerException {
-    return jsonb.fromJson(json, clazz);
+    return reader.unmarshal(json, clazz);
   }
 
 }
