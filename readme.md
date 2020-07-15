@@ -18,7 +18,7 @@ The utility should _just work_ for marshaling and unmarshaling of Java classes t
 ```java
 // Marshal a Java class to a json string.
 Entity entity = //get entity//
-String json = new JsonbUtility().marshal(service);
+String json = new JsonbUtility().marshal(entity);
 
 // Unmarshal a json string to a Java class
 Entity recoveredEntity = new JsonbUtility().unmarshal(json, Entity.class);
