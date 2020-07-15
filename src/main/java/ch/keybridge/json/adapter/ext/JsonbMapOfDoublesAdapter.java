@@ -16,7 +16,7 @@
  * suppliers, if any. The intellectual and technical concepts contained herein
  * are proprietary.
  */
-package ch.keybridge.json.adapter;
+package ch.keybridge.json.adapter.ext;
 
 import java.lang.reflect.Type;
 import java.util.List;
