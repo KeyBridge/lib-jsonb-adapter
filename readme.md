@@ -96,10 +96,10 @@ Apache License Version 2.0.  _"Knock yerself out"_
 
 **References**
 
-  *  [Jakarta JSON Binding](http://json-b.net/)
   *  [RFC8259](https://tools.ietf.org/html/rfc8259) The JavaScript Object Notation (JSON) Data Interchange Format
   *  [RFC7493](https://tools.ietf.org/html/rfc7493) The I-JSON Message Format
   *  [JSR 367](https://jcp.org/en/jsr/detail?id=367) JSR 367: Java<sup>tm</sup> API for JSON Binding (JSON-B)
+  *  [Jakarta JSON Binding](http://json-b.net/) Java™ Architecture for JSON Binding
   *  [Jakarta XML Binding](https://projects.eclipse.org/projects/ee4j.jaxb-impl) Java™ Architecture for XML Binding
  
 
