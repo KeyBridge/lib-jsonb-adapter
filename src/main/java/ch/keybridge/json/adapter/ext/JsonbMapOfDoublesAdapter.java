@@ -18,17 +18,13 @@
  */
 package ch.keybridge.json.adapter.ext;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.json.bind.serializer.DeserializationContext;
-import javax.json.bind.serializer.JsonbDeserializer;
-import javax.json.bind.serializer.JsonbSerializer;
-import javax.json.bind.serializer.SerializationContext;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonParser;
+import javax.json.bind.adapter.JsonbAdapter;
 import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -44,69 +40,55 @@ import org.locationtech.jts.io.WKTReader;
  *
  * @author Key Bridge
  * @since v0.0.1 created 01/02/18
+ * @since v1.0.0 copied 2020-07-15 from json-adapter
  */
-public class JsonbMapOfDoublesAdapter {
+public class JsonbMapOfDoublesAdapter implements JsonbAdapter<Map<Double, Double>, String> {
+
+  private static final Logger LOG = Logger.getLogger(JsonbMapOfDoublesAdapter.class.getName());
 
   /**
-   * Class that defines API used by {@code ObjectMapper} (and other chained
-   * {@code JsonSerializer}s too) to serialize Objects into JSON.
+   * {@inheritDoc}
+   * <p>
+   * Convert the Map of Double values into a JTS MULTIPOINT geometry. Applying
+   * the Precision Model will trim the numbers (key and value) to 4 decimal
+   * places. (Scale of 10^3 = 10000, where scale is the amount by which to
+   * multiply a coordinate after subtracting the offset, to obtain a precise
+   * coordinate).
    */
-  public static class Serializer implements JsonbSerializer<Map<Double, Double>> {
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Convert the Map of Double values into a JTS MULTIPOINT geometry. Applying
-     * the Precision Model will trim the numbers (key and value) to 4 decimal
-     * places. (Scale of 10^3 = 10000, where scale is the amount by which to
-     * multiply a coordinate after subtracting the offset, to obtain a precise
-     * coordinate).
-     */
-    @Override
-    public void serialize(Map<Double, Double> v, JsonGenerator jg, SerializationContext sc) {
-      if (v.isEmpty()) {
-        jg.writeNull();
-        return;
-      }
-      List<Coordinate> coordinates = v.entrySet().stream().map(e -> new Coordinate(e.getKey(), e.getValue())).collect(Collectors.toList());
-      jg.write(new GeometryFactory(new PrecisionModel(Math.pow(10, 6)))
-        .createMultiPoint(coordinates.toArray(new Coordinate[coordinates.size()]))
-        .toText().replace("MULTIPOINT", "DOUBLE"));
+  @Override
+  public String adaptToJson(Map<Double, Double> obj) throws Exception {
+    if (obj.isEmpty()) {
+      return null;
     }
-
+    List<Coordinate> coordinates = obj.entrySet().stream().map(e -> new Coordinate(e.getKey(), e.getValue())).collect(Collectors.toList());
+    return new GeometryFactory(new PrecisionModel(Math.pow(10, 6)))
+      .createMultiPoint(coordinates.toArray(new Coordinate[coordinates.size()]))
+      .toText().replace("MULTIPOINT", "DOUBLE");
   }
 
   /**
-   * Class that defines API used by {@code ObjectMapper} (and other chained
-   * {@code JsonDeserializer}s too) to deserialize Objects of from JSON, using
-   * provided {@code JsonParser}.
+   * {@inheritDoc}
+   * <p>
+   * Convert a Map of Double values into a JTS MULTIPOINT geometry. Applying the
+   * Precision Model will trim the numbers (key and value) to 4 decimal places.
+   * (Scale of 10^3 = 10000, where scale is the amount by which to multiply a
+   * coordinate after subtracting the offset, to obtain a precise coordinate).
    */
-  public static class Deserializer implements JsonbDeserializer<Map<Double, Double>> {
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Convert a Map of Double values into a JTS MULTIPOINT geometry. Applying
-     * the Precision Model will trim the numbers (key and value) to 4 decimal
-     * places. (Scale of 10^3 = 10000, where scale is the amount by which to
-     * multiply a coordinate after subtracting the offset, to obtain a precise
-     * coordinate).
-     */
-    @Override
-    public Map<Double, Double> deserialize(JsonParser jp, DeserializationContext dc, Type type) {
-      try {
-        Map<Double, Double> treeMap = new TreeMap<>();
-        Geometry geometry = new WKTReader().read(jp.getString().replace("DOUBLE", "MULTIPOINT"));
-        if (geometry instanceof MultiPoint) {
-          for (Coordinate coordinate : geometry.getCoordinates()) {
-            treeMap.put(coordinate.x, coordinate.y);
-          }
+  @Override
+  public Map<Double, Double> adaptFromJson(String obj) throws Exception {
+    try {
+      Map<Double, Double> treeMap = new TreeMap<>();
+      Geometry geometry = new WKTReader().read(obj.replace("DOUBLE", "MULTIPOINT"));
+      if (geometry instanceof MultiPoint) {
+        for (Coordinate coordinate : geometry.getCoordinates()) {
+          treeMap.put(coordinate.x, coordinate.y);
         }
-        return treeMap;
-      } catch (ParseException exception) {
-        return null;
       }
+      return treeMap;
+    } catch (ParseException exception) {
+      LOG.log(Level.WARNING, "Map parse error {0}.  {1}", new Object[]{exception.getMessage(), obj});
+      return null;
     }
-
   }
+
 }

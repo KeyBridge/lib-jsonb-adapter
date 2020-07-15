@@ -15,16 +15,12 @@
  */
 package ch.keybridge.json.adapter;
 
-import java.lang.reflect.Type;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.json.bind.serializer.DeserializationContext;
-import javax.json.bind.serializer.JsonbDeserializer;
-import javax.json.bind.serializer.JsonbSerializer;
-import javax.json.bind.serializer.SerializationContext;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonParser;
+import javax.json.bind.adapter.JsonbAdapter;
 import org.locationtech.jts.geom.Envelope;
 
 /**
@@ -36,51 +32,40 @@ import org.locationtech.jts.geom.Envelope;
  *
  * @author Key Bridge
  * @since v0.0.1 created 01/02/18
+ * @since v1.0.0 copied 2020-07-15 from json-adapter
  */
-public class JsonbEnvelopeAdapter {
+public class JsonbEnvelopeAdapter implements JsonbAdapter<Envelope, String> {
 
   private static final DecimalFormat DF = new DecimalFormat("0.000000");
+  private static final Logger LOG = Logger.getLogger(JsonbEnvelopeAdapter.class.getName());
 
   /**
-   * Class that defines API used by {@code ObjectMapper} (and other chained
-   * {@code JsonSerializer}s too) to serialize Objects into JSON.
+   * {@inheritDoc}
    */
-  public static class Serializer implements JsonbSerializer<Envelope> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void serialize(Envelope v, JsonGenerator generator, SerializationContext ctx) {
-      generator.write("ENV(" + DF.format(v.getMinX())
-        + ", " + DF.format(v.getMinY())
-        + ", " + DF.format(v.getMaxX())
-        + ", " + DF.format(v.getMaxY()) + ")");
-    }
+  @Override
+  public String adaptToJson(Envelope obj) throws Exception {
+    return "ENV(" + DF.format(obj.getMinX())
+      + ", " + DF.format(obj.getMinY())
+      + ", " + DF.format(obj.getMaxX())
+      + ", " + DF.format(obj.getMaxY()) + ")";
   }
 
   /**
-   * Class that defines API used by {@code ObjectMapper} (and other chained
-   * {@code JsonDeserializer}s too) to deserialize Objects of from JSON, using
-   * provided {@code JsonParser}.
+   * {@inheritDoc}
    */
-  public static class Deserializer implements JsonbDeserializer<Envelope> {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Envelope deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
-      Pattern p = Pattern.compile("ENV\\((-?\\d+\\.\\d+)\\s*,\\s*(-?\\d+\\.\\d+)\\s*,\\s*(-?\\d+\\.\\d+)\\s*,\\s*(-?\\d+\\.\\d+)\\)");
-      Matcher m = p.matcher(parser.getString());
-      if (m.find()) {
-        return new Envelope(Double.valueOf(m.group(1)),
-                            Double.valueOf(m.group(2)),
-                            Double.valueOf(m.group(3)),
-                            Double.valueOf(m.group(4)));
-      }
+  @Override
+  public Envelope adaptFromJson(String obj) throws Exception {
+    Pattern p = Pattern.compile("ENV\\((-?\\d+\\.\\d+)\\s*,\\s*(-?\\d+\\.\\d+)\\s*,\\s*(-?\\d+\\.\\d+)\\s*,\\s*(-?\\d+\\.\\d+)\\)");
+    Matcher m = p.matcher(obj);
+    if (m.find()) {
+      return new Envelope(Double.valueOf(m.group(1)),
+                          Double.valueOf(m.group(2)),
+                          Double.valueOf(m.group(3)),
+                          Double.valueOf(m.group(4)));
+    } else {
+      LOG.log(Level.WARNING, "WKT envelope parse error. {1}", new Object[]{obj});
       return null;
     }
-
   }
+
 }
