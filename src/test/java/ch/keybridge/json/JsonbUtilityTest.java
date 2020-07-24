@@ -19,6 +19,9 @@
 package ch.keybridge.json;
 
 import com.thedeanda.lorem.LoremIpsum;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Random;
 import org.junit.*;
@@ -56,7 +59,7 @@ public class JsonbUtilityTest {
   }
 
   @Test
-  public void marshalUnmarshal() {
+  public void testPosition() {
 
     Position p = new Position();
     p.setName(l.getCity());
@@ -78,6 +81,34 @@ public class JsonbUtilityTest {
     Position recovered = jsonb.unmarshal(json, Position.class);
     Assert.assertEquals(p, recovered);
     System.out.println("marshalUnmarshal OK");
+  }
+
+  @Test
+  public void testEventModel() {
+
+    EventModel e = new EventModel();
+    e.setDateStart(ZonedDateTime.now());
+    e.setDateEnd(ZonedDateTime.now().plus(new Random().nextInt(48), ChronoUnit.HOURS));
+    e.setRecurrence("FREQ=DAILY;INTERVAL=1;COUNT=5;BYDAY=1MO,-2SU");
+
+    System.out.println("e  " + e);
+    System.out.println(jsonb.marshal(e));
+
+  }
+
+  @Test
+  public void testZoneDateTime() {
+
+//    Error parsing class java.time.ZonedDateTime from value: 2020-07-23T14:43:34.99Z.
+    String dt = "2020-07-23T14:43:34.99Z";
+
+    ZonedDateTime zdt = ZonedDateTime.parse(dt);
+
+    System.out.println("zdt: " + zdt.toString());
+    System.out.println("  " + zdt.getZone() + " " + zdt.getOffset() + " " + zdt.getZone().getId());
+    ZonedDateTime mdt = zdt.withZoneSameInstant(Clock.systemDefaultZone().getZone());
+    System.out.println("mdt: " + mdt);
+
   }
 
 }
