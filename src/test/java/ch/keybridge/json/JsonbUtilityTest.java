@@ -59,7 +59,7 @@ public class JsonbUtilityTest {
   }
 
   @Test
-  public void testPosition() {
+  public void testPosition() throws Exception {
 
     Position p = new Position();
     p.setName(l.getCity());
@@ -84,7 +84,7 @@ public class JsonbUtilityTest {
   }
 
   @Test
-  public void testEventModel() {
+  public void testEventModel() throws Exception {
 
     EventModel e = new EventModel();
     e.setDateStart(ZonedDateTime.now());
