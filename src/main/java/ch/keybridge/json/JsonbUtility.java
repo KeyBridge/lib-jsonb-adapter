@@ -18,8 +18,6 @@
  */
 package ch.keybridge.json;
 
-import ch.keybridge.json.adapter.JsonbEnvelopeAdapter;
-import ch.keybridge.json.adapter.JsonbGeometryAdapter;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import javax.json.bind.adapter.JsonbAdapter;
@@ -59,9 +57,7 @@ public class JsonbUtility {
       .withFormatting(true)
       .withStrictIJSON(true)
       .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
-      .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy())
-      .withAdapters(new JsonbGeometryAdapter())
-      .withAdapters(new JsonbEnvelopeAdapter());
+      .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy());
     reader = new JsonbReader(jsonbConfig);
     writer = new JsonbWriter(jsonbConfig);
   }
