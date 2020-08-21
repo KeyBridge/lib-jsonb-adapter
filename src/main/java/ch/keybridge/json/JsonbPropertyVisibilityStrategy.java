@@ -21,6 +21,9 @@ package ch.keybridge.json;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.json.bind.config.PropertyVisibilityStrategy;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -46,9 +49,14 @@ public class JsonbPropertyVisibilityStrategy implements PropertyVisibilityStrate
     for (Annotation annotation : field.getAnnotations()) {
       if (annotation instanceof XmlTransient) {
         return false;
+      } else if (annotation instanceof JsonbTransient) {
+        return false;
       }
     }
-    return true;
+    /**
+     * Do not reveal `static final` attributes.
+     */
+    return !(Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers()));
   }
 
   /**
@@ -61,6 +69,8 @@ public class JsonbPropertyVisibilityStrategy implements PropertyVisibilityStrate
       if (annotation instanceof XmlElement) {
         return true;
       } else if (annotation instanceof XmlAttribute) {
+        return true;
+      } else if (annotation instanceof JsonbProperty) {
         return true;
       }
     }
