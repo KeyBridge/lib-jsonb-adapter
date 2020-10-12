@@ -18,6 +18,7 @@
  */
 package ch.keybridge.json;
 
+import java.io.OutputStream;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -114,6 +115,20 @@ public class JsonbWriter {
    */
   public final <T> String marshal(T clazz) throws JsonbException, NullPointerException {
     return jsonb.toJson(clazz);
+  }
+
+  /**
+   * Writes the Java object tree with root object object to a String instance as
+   * JSON.
+   *
+   * @param <T>          the entity class type
+   * @param clazz        The object content tree to be serialized.
+   * @param outputStream The JSON will be sent as a byte stream to the given
+   *                     OutputStream. Upon a successful completion, the stream
+   *                     will be closed by this method.
+   */
+  public final <T> void marshal(T clazz, OutputStream outputStream) {
+    jsonb.toJson(clazz, outputStream);
   }
 
 }

@@ -18,6 +18,7 @@
  */
 package ch.keybridge.json;
 
+import java.io.InputStream;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -116,5 +117,19 @@ public class JsonbReader {
    */
   public final <T> T unmarshal(String json, Class<T> clazz) throws JsonbException, NullPointerException {
     return jsonb.fromJson(json, clazz);
+  }
+
+  /**
+   * Reads in a JSON data from the specified InputStream and return the
+   * resulting content tree.
+   *
+   * @param <T>         Type of the content tree's root object.
+   * @param inputStream The stream is read as a JSON data. Upon a successful
+   *                    completion, the stream will be closed by this method.
+   * @param clazz       Type of the content tree's root object.
+   * @return The object instance
+   */
+  public final <T> T unmarshal(InputStream inputStream, Class<T> clazz) {
+    return jsonb.fromJson(inputStream, clazz);
   }
 }

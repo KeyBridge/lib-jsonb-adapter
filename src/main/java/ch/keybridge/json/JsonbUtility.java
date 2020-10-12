@@ -18,6 +18,8 @@
  */
 package ch.keybridge.json;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.JsonbException;
 import javax.json.bind.adapter.JsonbAdapter;
@@ -134,6 +136,34 @@ public class JsonbUtility {
    */
   public final <T> T unmarshal(String json, Class<T> clazz) throws JsonbException, NullPointerException {
     return reader.unmarshal(json, clazz);
+  }
+
+  /**
+   * Reads in a JSON data from the specified InputStream and return the
+   * resulting content tree.
+   *
+   * @param <T>         Type of the content tree's root object.
+   * @param inputStream The stream is read as a JSON data. Upon a successful
+   *                    completion, the stream will be closed by this method.
+   * @param clazz       Type of the content tree's root object.
+   * @return The object instance
+   */
+  public <T> T unmarshal(InputStream inputStream, Class<T> clazz) {
+    return reader.unmarshal(inputStream, clazz);
+  }
+
+  /**
+   * Writes the Java object tree with root object object to a String instance as
+   * JSON.
+   *
+   * @param <T>          the entity class type
+   * @param clazz        The object content tree to be serialized.
+   * @param outputStream The JSON will be sent as a byte stream to the given
+   *                     OutputStream. Upon a successful completion, the stream
+   *                     will be closed by this method.
+   */
+  public final <T> void marshal(T clazz, OutputStream outputStream) {
+    writer.marshal(clazz, outputStream);
   }
 
 }
