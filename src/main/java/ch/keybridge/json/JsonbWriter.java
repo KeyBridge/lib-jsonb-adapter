@@ -30,6 +30,8 @@ import javax.json.bind.serializer.JsonbSerializer;
 /**
  * Common JsonB marshaling and un-marshaling utilities. These methods help to
  * serialize and un-serialize object representations to and from JSON.
+ * <p>
+ * Formatting is disabled by default.
  *
  * @author Key Bridge
  * @since v1.0.0 created 2020-07-15
@@ -57,11 +59,30 @@ public class JsonbWriter {
      * I-JSON (”Internet JSON”) is a restricted profile of JSON.
      */
     jsonbConfig = new JsonbConfig()
-      .withFormatting(true)
+      .withFormatting(false)
       .withStrictIJSON(true)
       .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
       .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy());
     this.jsonb = JsonbBuilder.create(jsonbConfig);
+  }
+
+  /**
+   * Property used to specify whether or not the serialized JSON data is
+   * formatted with linefeeds and indentation. Configures value of FORMATTING
+   * property. Parameters:
+   *
+   * @param formatted True means serialized data is formatted, false (default)
+   *                  means no formatting.
+   * @return This JsonbUtility instance.
+   */
+  public final JsonbWriter withFormatting(boolean formatted) {
+    jsonbConfig = new JsonbConfig()
+      .withFormatting(formatted)
+      .withStrictIJSON(true)
+      .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
+      .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy());
+    this.jsonb = JsonbBuilder.create(jsonbConfig);
+    return this;
   }
 
   /**

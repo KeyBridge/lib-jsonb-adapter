@@ -30,6 +30,8 @@ import javax.json.bind.serializer.JsonbSerializer;
 /**
  * Common JsonB marshaling and un-marshaling utilities. These methods help to
  * serialize and un-serialize object representations to and from JSON.
+ * <p>
+ * Formatting is enabled by default.
  *
  * @author Key Bridge
  * @since v1.0.0 created 2020-07-15
@@ -65,13 +67,32 @@ public class JsonbUtility {
   }
 
   /**
+   * Property used to specify whether or not the serialized JSON data is
+   * formatted with linefeeds and indentation. Configures value of FORMATTING
+   * property. Parameters:
+   *
+   * @param formatted True (default) means serialized data is formatted, false
+   *                  means no formatting.
+   * @return This JsonbUtility instance.
+   */
+  public final JsonbUtility withFormatting(boolean formatted) {
+    JsonbConfig jsonbConfig = new JsonbConfig()
+      .withFormatting(formatted)
+      .withStrictIJSON(true)
+      .withBinaryDataStrategy(BinaryDataStrategy.BASE_64)
+      .withPropertyVisibilityStrategy(new JsonbPropertyVisibilityStrategy());
+    writer = new JsonbWriter(jsonbConfig);
+    return this;
+  }
+
+  /**
    * Property used to specify custom mapping adapters. Configures value of
    * {@code ADAPTERS} property. Calling withAdapters more than once will merge
    * the adapters with previous value.
    *
    * @param adapters Custom mapping adapters which affects serialization and
    *                 deserialization.
-   * @return This JsonbConfig instance.
+   * @return This JsonbUtility instance.
    */
   public final JsonbUtility withAdapters(final JsonbAdapter... adapters) {
     reader = reader.withAdapters(adapters);
