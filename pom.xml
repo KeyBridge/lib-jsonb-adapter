@@ -52,7 +52,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <!--LocationTech JTS Topology Suite-->
     <!--Version 1.16.0 released 18-Sep-2018-->
-    <jts.version>1.16.0</jts.version>
+    <!--Version 1.18.0 released 23-Dec-2020-->
+    <jts.version>1.18.0</jts.version>
   </properties>
 
   <dependencies>
@@ -83,7 +84,7 @@
     <dependency>
       <groupId>org.locationtech.jts</groupId>
       <artifactId>jts-core</artifactId>
-      <version>1.16.0</version>
+      <version>${jts.version}</version>
       <scope>provided</scope>
     </dependency>
 
