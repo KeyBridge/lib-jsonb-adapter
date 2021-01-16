@@ -36,6 +36,7 @@
     v0.0.1 new project created 2020-07-14 to replace lib-json-adapter based on fasterxml
     v1.0.0 - working library 2020-07-15
     - add formatted double adapters 2020-12-01
+    - add JsonbListAdapter 2021-01-16
 
 
 
