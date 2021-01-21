@@ -58,5 +58,4 @@ public class JsonbZonedDateTimeAdapter implements JsonbAdapter<ZonedDateTime, St
   public ZonedDateTime adaptFromJson(String obj) throws Exception {
     return obj == null ? null : ZonedDateTime.parse(obj, DATETIME_FORMATTER);
   }
-
 }
