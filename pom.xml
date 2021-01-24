@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>keybridge.lib</groupId>
   <artifactId>jsonb-adapter</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <packaging>jar</packaging>
 
   <name>lib-jsonb-adapter</name>
@@ -37,6 +37,7 @@
     v1.0.0 - working library 2020-07-15
     - add formatted double adapters 2020-12-01
     - add JsonbListAdapter 2021-01-16
+    v1.1.0 - add more type adapters to 'ext' package
 
 
 
