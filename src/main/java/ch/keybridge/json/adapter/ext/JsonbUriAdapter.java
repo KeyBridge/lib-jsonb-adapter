@@ -31,16 +31,16 @@ public class JsonbUriAdapter implements JsonbAdapter<URI, String> {
    * {@inheritDoc}
    */
   @Override
-  public String adaptToJson(URI obj) throws Exception {
-    return obj.toString();
+  public String adaptToJson(URI original) throws Exception {
+    return original.toString();
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public URI adaptFromJson(String obj) throws Exception {
-    return URI.create(obj);
+  public URI adaptFromJson(String adapted) throws Exception {
+    return URI.create(adapted.trim());
   }
 
 }
