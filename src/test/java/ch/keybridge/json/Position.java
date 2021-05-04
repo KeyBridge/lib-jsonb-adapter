@@ -381,15 +381,18 @@ public class Position implements Serializable {
   }
 
   /**
-   * @return The latitude geographic coordinates specified in decimal degrees.
+   * Get the latitude geographic coordinates specified in decimal degrees
+   *
+   * @return The latitude geographic coordinates.
    */
   public Double getLatitude() {
     return latitude;
   }
 
   /**
-   * @param latitude The latitude geographic coordinates specified in decimal
-   *                 degrees.
+   * Set the latitude geographic coordinates specified in decimal degrees
+   *
+   * @param latitude The latitude geographic coordinates.
    */
   public void setLatitude(Double latitude) {
     this.latitude = latitude;
@@ -656,9 +659,6 @@ public class Position implements Serializable {
     return latitude != null && longitude != null;
   }
 
-  /**
-   * @return a hash code of the latitude and longitude
-   */
   @Override
   public int hashCode() {
     int hash = 3;
