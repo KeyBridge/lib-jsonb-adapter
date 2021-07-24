@@ -24,8 +24,8 @@ import javax.json.bind.adapter.JsonbAdapter;
 
 /**
  * JSON-B adapter to translate between a standard java.time.ZonedDateTime
- * instance and the ISO 8601 Date format. The ISO instant formatter that formats
- * or parses an instant in UTC, such as '2011-12-03T10:15:30Z'.
+ * instance and the ISO 8601 Date format. This adapter formats or parses an
+ * instant in UTC, such as '2011-12-03T10:15:30Z'.
  * <p>
  * JSON-B has built in java.time transforms that are generally well behaved. Use
  * this when you need to tightly control how a ZonedDateTime is presented.
