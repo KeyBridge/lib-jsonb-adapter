@@ -20,6 +20,7 @@ package ch.keybridge.json.adapter.ext;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import javax.json.bind.adapter.JsonbAdapter;
 
 /**
@@ -45,10 +46,12 @@ public class JsonbZonedDateTimeAdapter implements JsonbAdapter<ZonedDateTime, St
 
   /**
    * {@inheritDoc}
+   * <p>
+   * Truncates the provided ZonedDateTime instance to Seconds.
    */
   @Override
   public String adaptToJson(ZonedDateTime obj) throws Exception {
-    return obj != null ? obj.format(DATETIME_FORMATTER) : null;
+    return obj != null ? obj.truncatedTo(ChronoUnit.SECONDS).format(DATETIME_FORMATTER) : null;
   }
 
   /**
